@@ -1,6 +1,86 @@
 package com.hellospring.basicClass;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class DualPriorityQueue {
+    private final IntHeap minHeap;
+    private final IntHeap maxHeap;
+    private final Map<Integer, Integer> countMap;
+    private int validSize;
+
+    public DualPriorityQueue() {
+        this.minHeap = new IntHeap(true);
+        this.maxHeap = new IntHeap(false);
+        this.countMap = new HashMap<>();
+        this.validSize = 0;
+    }
+
+    public void insert(int x) {
+        minHeap.push(x);
+        maxHeap.push(x);
+        int cnt = countMap.containsKey(x) ? countMap.get(x) + 1 : 1;
+        countMap.put(x, cnt);
+        validSize++;
+    }
+
+    public void deleteMin() {
+        if (validSize == 0) return;
+
+        removeValid(minHeap);
+        validSize--;
+    }
+
+    public void deleteMax() {
+        if (validSize == 0) return;
+
+        removeValid(maxHeap);
+        validSize--;
+    }
+
+    public Integer getMin() {
+        if (validSize == 0) return null;
+
+        cleanTop(minHeap);
+
+        return minHeap.peek();
+    }
+
+    public Integer getMax() {
+        if (validSize == 0) return null;
+
+        cleanTop(maxHeap);
+
+        return maxHeap.peek();
+    }
+
+    public int size() {
+        return validSize;
+    }
+
+    public boolean isEmpty(){
+        return validSize == 0;
+    }
+
+    private void removeValid(IntHeap heap)
+    {
+        cleanTop(heap);
+
+        int val = heap.pop();
+        int cnt = countMap.get(val);
+        if (cnt == 0) countMap.remove(val);
+        else countMap.put(val, cnt - 1);
+    }
+
+    private void cleanTop(IntHeap heap)
+    {
+        while(!heap.isEmpty())
+        {
+            int val = heap.peek();
+            if (countMap.containsKey(val)) return;
+            heap.pop();
+        }
+    }
 
     private static class IntHeap {
         private int[] heap;
