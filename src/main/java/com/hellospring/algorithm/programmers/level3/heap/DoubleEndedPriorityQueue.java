@@ -10,19 +10,16 @@ public class DoubleEndedPriorityQueue {
         int minValue = 0;
         int maxValue = 0;
 
-        for (int i=0; i<operations.length; i++)
-        {
-            String[] list = operations[i].split(" ");
+        for (String operation : operations) {
+            String[] list = operation.split(" ");
             String firstValue = list[0];
-            int secondValue =  Integer.parseInt(list[1]);
+            int secondValue = Integer.parseInt(list[1]);
             if (firstValue.equals("I")) {
                 dualPriorityQueue.insert(secondValue);
-            }
-            else {
-                if(secondValue == 1) {
+            } else {
+                if (secondValue == 1) {
                     dualPriorityQueue.deleteMax();
-                }
-                else {
+                } else {
                     dualPriorityQueue.deleteMin();
                 }
             }
